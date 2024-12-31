@@ -19,7 +19,7 @@ def print_logo():
     print(f"$$ | $$ | $$ |$$ |$$  __$$ |$$ |  $$ |$$ |      $$ |")
     print(f"$$ | $$ | $$ |$$ |\$$$$$$$ |$$$$$$$  |\$$$$$$$\ $$ |")
     print(f"\__| \__| \__|\__| \_______|$$  ____/  \_______|\__|")
-    print(f"version BEATA               $$ |                    ")           
+    print(f"version 1.0                 $$ |                    ")           
     print(f"                            $$ |                    ")         
     print(f"                            \__|                    ")             
     return 0 

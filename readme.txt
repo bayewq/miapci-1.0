@@ -4,6 +4,7 @@ Miami Investment Association's Project Creek Island
 
 [Author]
 LocalKebabShackOwner
+bayewq
 
 
 [Installation]
@@ -13,7 +14,7 @@ LocalKebabShackOwner
 
 3. run setup.bat
 
-DPOWNALOAD ME TYOOO:" https://github.com/UB-Mannheim/tesseract/wiki
+Download as well:" https://github.com/UB-Mannheim/tesseract/wiki
 
 [Manual] 
 1. launch Roblox 
