@@ -7,7 +7,43 @@ from time import sleep
 from PIL import Image
 import requests
 
+##########################################
+#               EDIT THESE               #
+
+max_shares = 50
+buy_at     = 300
+sell_at    = 800
+
+#change this to the tesseract.exe Location
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
+
+#                                        # 
+##########################################
+
+ahk = AHK()
+item_coordinates = { # Made for 1980 x 1080 Monitor
+    "empty"            : {"x": 1000, "y": 40},
+
+    "enter"            : {"x": 620, "y": 340},
+    "portfolio"        : {"x": 730, "y": 550},
+    "buy_menu"         : {"x": 1200, "y": 550},
+    "back"             : {"x": 500, "y": 180},
+
+    "box1_buy_amount"  : {"x": 1200, "y": 450},
+    "box1_buy"         : {"x": 1200, "y": 470},
+    "box1_sell_amount" : {"x": 1335, "y": 450},
+    "box1_sell"        : {"x": 1335, "y": 470},
+
+    "box2_buy_amount"  : {"x": 1200, "y": 500},
+    "box2_buy"         : {"x": 1200, "y": 525},
+    "box2_sell_amount" : {"x": 1335, "y": 500},
+    "box2_sell"        : {"x": 1335, "y": 525}, 
+
+    "box3_buy_amount"  : {"x": 1200, "y": 565},
+    "box3_buy"         : {"x": 1200, "y": 580},
+    "box3_sell_amount" : {"x": 1335, "y": 565},
+    "box3_sell"        : {"x": 1335, "y": 580},     
+}
 
 def print_logo():
     print('')
@@ -23,7 +59,6 @@ def print_logo():
     print(f"                            $$ |                    ")         
     print(f"                            \__|                    ")             
     return 0 
-
 
 def translate(image):
     img = Image.open(image)
@@ -78,8 +113,44 @@ def get_stock_data(vol,price):
     price_data[1]=int(raw_price)
     return (price_data)
 
+def enter_stocks_menu():
+    print("Entering Stocks Menu")
+    ahk.mouse_move(item_coordinates["enter"]["x"], item_coordinates["enter"]["y"])
+    sleep(3)
+    ahk.click()
+    sleep(3)
+    return 0
+
+def enter_market():
+    print("Entering Stock Market")
+    ahk.mouse_move(item_coordinates["buy_menu"]["x"], item_coordinates["buy_menu"]["y"])
+    sleep(3)
+    ahk.click()
+    sleep(3)
+    ahk.mouse_move(item_coordinates["empty"]["x"], item_coordinates["empty"]["y"])
+    sleep(1)
+    return 0
+
+def remount():
+    print("Remounting")
+    ahk.key_press('space')
+    sleep(3)
+    ahk.key_press('e')
+    sleep(3)
+    return 0 
+
 def main():
     print_logo()
+    
+    input('Press Enter To Continue...')
+    print('TAB BACK INTO ROBLOX')
+    sleep(3)
+    
+    remount()
+    enter_stocks_menu()
+    enter_market()
+    
+    
     while (True):
         capture_prices()
         try:
@@ -90,7 +161,12 @@ def main():
             print(meinc_data)
             print(sesh_data)
             print(tsv_data)
+            print('')
         except:
-            print('error')
-        sleep(1)
+            print('image capture error')
+            remount()
+            enter_stocks_menu()
+            enter_market()
+        sleep(5)
+
 main()
