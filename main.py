@@ -11,8 +11,8 @@ import requests
 #               EDIT THESE               #
 
 max_shares = 50
-buy_at     = 10000
-sell_at    = 800
+buy_at     = 199999
+sell_at    = 800902020
 
 #change this to the tesseract.exe Location
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
@@ -29,15 +29,15 @@ item_coordinates = { # Made for 1980 x 1080 Monitor
     "buy_menu"         : {"x": 1200, "y": 550},
     "back"             : {"x": 500, "y": 180},
 
-    "box1_buy_amount"  : {"x": 1200, "y": 450},
-    "box1_buy"         : {"x": 1200, "y": 470},
-    "box1_sell_amount" : {"x": 1335, "y": 450},
-    "box1_sell"        : {"x": 1335, "y": 470},
+    "box1_buy_amount"  : {"x": 1140, "y": 485},
+    "box1_buy"         : {"x": 1140, "y": 500},
+    "box1_sell_amount" : {"x": 1250, "y": 485},
+    "box1_sell"        : {"x": 1250, "y": 500},
 
-    "box2_buy_amount"  : {"x": 1200, "y": 500},
-    "box2_buy"         : {"x": 1200, "y": 525},
-    "box2_sell_amount" : {"x": 1335, "y": 500},
-    "box2_sell"        : {"x": 1335, "y": 525}, 
+    "box2_buy_amount"  : {"x": 1200, "y": 540},
+    "box2_buy"         : {"x": 1200, "y": 560},
+    "box2_sell_amount" : {"x": 1335, "y": 540},
+    "box2_sell"        : {"x": 1335, "y": 560}, 
 
     "box3_buy_amount"  : {"x": 1200, "y": 565},
     "box3_buy"         : {"x": 1200, "y": 580},
@@ -150,19 +150,45 @@ def startup():
     enter_stocks_menu()
     enter_market()
 
-def buy(stock):
+def buy(stock,shares):
     print ("Buying"+stock[2])
-    return
+    
+    if (stock[2] == 'meinc'):
+        amt_x=item_coordinates["box1_buy_amount"]["x"]
+        amt_y=item_coordinates["box1_buy_amount"]["y"]
+
+        buy_x = item_coordinates["box1_buy"]["x"]
+        buy_y = item_coordinates["box1_buy"]["y"]
+    elif (stock[2] == 'sesh'):
+        amt_x=item_coordinates["box1_buy_amount"]["x"]
+        amt_y=item_coordinates["box1_buy_amount"]["y"]
+    elif (stock[2] == 'tsv'):
+        amt_x=item_coordinates["box1_buy_amount"]["x"]
+        amt_y=item_coordinates["box1_buy_amount"]["y"]
+    
+    ahk.mouse_move(amt_x,amt_y)
+    sleep(0.1)
+    ahk.click()
+    sleep(0.1)
+    ahk.type(f"{shares}")
+    sleep(0.1)
+    ahk.mouse_move(buy_x,buy_y)
+    sleep(0.1)
+    ahk.click()
+    sleep(1)
+    remount()
+    enter_stocks_menu()
+    enter_market()
+    return shares
 
 def sell(stock):
     return
 
-def main():    
-    startup()
+startup()
 
-    while (True):
-        capture_prices()
-        try:
+while (True):
+    capture_prices()
+    try:
             meinc_data = (get_stock_data('meinc_vol.png','meinc_price.png','meinc'))
             sesh_data = (get_stock_data('sesh_vol.png','sesh_price.png','sesh'))
             tsv_data = (get_stock_data('tsv_vol.png','tsv_price.png','tsv'))
@@ -173,16 +199,19 @@ def main():
             print (stock_data)
 
             for stock in stock_data:
-                if stock[1] < buy_at and stock[0] > 0:
-                    buy(stock)
+                if stock[1] < buy_at and stock[0] > 0 and max_shares > 0:
+                    if stock[0] > max_shares:
+                        shares = max_shares
+                    else:
+                        shares = stock[0]
+                    max_shares = max_shares - buy(stock,shares)
+                    print("shares now available ",max_shares)
                     break
-           
-        except:
-            print('image capture error')
-            remount()
-            enter_stocks_menu()
-            enter_market()
-        sleep(5)
-        ''
+            sleep(5)
 
-main()
+    except:
+        print('image capture error')
+        remount()
+        enter_stocks_menu()
+        enter_market()
+        sleep(3)    
