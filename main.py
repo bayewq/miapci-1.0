@@ -34,15 +34,15 @@ item_coordinates = { # Made for 1980 x 1080 Monitor
     "box1_sell_amount" : {"x": 1250, "y": 485},
     "box1_sell"        : {"x": 1250, "y": 500},
 
-    "box2_buy_amount"  : {"x": 1200, "y": 540},
-    "box2_buy"         : {"x": 1200, "y": 560},
-    "box2_sell_amount" : {"x": 1335, "y": 540},
-    "box2_sell"        : {"x": 1335, "y": 560}, 
+    "box2_buy_amount"  : {"x": 1140, "y": 540},
+    "box2_buy"         : {"x": 1140, "y": 560},
+    "box2_sell_amount" : {"x": 1250, "y": 540},
+    "box2_sell"        : {"x": 1250, "y": 560}, 
 
-    "box3_buy_amount"  : {"x": 1200, "y": 565},
-    "box3_buy"         : {"x": 1200, "y": 580},
-    "box3_sell_amount" : {"x": 1335, "y": 565},
-    "box3_sell"        : {"x": 1335, "y": 580},     
+    "box3_buy_amount"  : {"x": 1140, "y": 595},
+    "box3_buy"         : {"x": 1140, "y": 620},
+    "box3_sell_amount" : {"x": 1250, "y": 595},
+    "box3_sell"        : {"x": 1250, "y": 620},     
 }
 
 def print_logo():
@@ -160,11 +160,11 @@ def buy(stock,shares):
         buy_x = item_coordinates["box1_buy"]["x"]
         buy_y = item_coordinates["box1_buy"]["y"]
     elif (stock[2] == 'sesh'):
-        amt_x=item_coordinates["box1_buy_amount"]["x"]
-        amt_y=item_coordinates["box1_buy_amount"]["y"]
+        amt_x=item_coordinates["box2_buy_amount"]["x"]
+        amt_y=item_coordinates["box2_buy_amount"]["y"]
     elif (stock[2] == 'tsv'):
-        amt_x=item_coordinates["box1_buy_amount"]["x"]
-        amt_y=item_coordinates["box1_buy_amount"]["y"]
+        amt_x=item_coordinates["box3_buy_amount"]["x"]
+        amt_y=item_coordinates["box3_buy_amount"]["y"]
     
     ahk.mouse_move(amt_x,amt_y)
     sleep(0.1)
