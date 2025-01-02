@@ -1,28 +1,28 @@
 [Name]
 Miami Investment Association's Project Creek Island 
-1.0 Accurate and Tested Prerelease
+1.0 Prerelease
 
 [Author]
-LocalKebabShackOwner
-bayewq
+
+Built by bayewq on original version by LocalKebabShackOwner
 
 
 [Installation]
-1. go to https://www.python.org/downloads/ and download python 3.x
+1. Go to https://www.python.org/downloads/ and download python 3.x
 
-2. install Python
+2. Install Python (version 3+)
 
-3. run setup.bat
+3. Run setup.bat
 
-Download as well:" https://github.com/UB-Mannheim/tesseract/wiki
+Download as well: https://github.com/UB-Mannheim/tesseract/wiki
 
 [Manual] 
-1. launch Roblox 
+1. Launch Roblox 
 
-2. enter a stock trading terminal
+2. Enter a stock trading terminal
 
-3. make sure Roblox is fullscreen 
+3. Make sure Roblox is fullscreen 
 
-4. launch main.py
+4. Launch main.py
 
-5. tab back into Roblox
+5. Tab back into Roblox
