@@ -11,7 +11,7 @@ import requests
 #               EDIT THESE               #
 
 max_shares = 50
-buy_at     = 300
+buy_at     = 10000
 sell_at    = 800
 
 #change this to the tesseract.exe Location
@@ -105,8 +105,8 @@ def capture_prices():
         sct_img = sct.grab(monitor)
         mss.tools.to_png(sct_img.rgb, sct_img.size, output=output)
 
-def get_stock_data(vol,price):
-    price_data = [1,1]
+def get_stock_data(vol,price,ticker):
+    price_data = [1,1,ticker]
     vol_data = translate(vol)
     raw_price = translate(price)[1:]
     price_data[0]=int(vol_data)
@@ -139,7 +139,7 @@ def remount():
     sleep(3)
     return 0 
 
-def main():
+def startup():
     print_logo()
     
     input('Press Enter To Continue...')
@@ -149,24 +149,40 @@ def main():
     remount()
     enter_stocks_menu()
     enter_market()
-    
-    
+
+def buy(stock):
+    print ("Buying"+stock[2])
+    return
+
+def sell(stock):
+    return
+
+def main():    
+    startup()
+
     while (True):
         capture_prices()
         try:
-            meinc_data = (get_stock_data('meinc_vol.png','meinc_price.png'))
-            sesh_data = (get_stock_data('sesh_vol.png','sesh_price.png'))
-            tsv_data = (get_stock_data('tsv_vol.png','tsv_price.png'))
-            
-            print(meinc_data)
-            print(sesh_data)
-            print(tsv_data)
+            meinc_data = (get_stock_data('meinc_vol.png','meinc_price.png','meinc'))
+            sesh_data = (get_stock_data('sesh_vol.png','sesh_price.png','sesh'))
+            tsv_data = (get_stock_data('tsv_vol.png','tsv_price.png','tsv'))
+
+            stock_data = [meinc_data,sesh_data,tsv_data]
+
             print('')
+            print (stock_data)
+
+            for stock in stock_data:
+                if stock[1] < buy_at and stock[0] > 0:
+                    buy(stock)
+                    break
+           
         except:
             print('image capture error')
             remount()
             enter_stocks_menu()
             enter_market()
         sleep(5)
+        ''
 
 main()
