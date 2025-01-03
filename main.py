@@ -12,7 +12,7 @@ import requests
 
 max_shares = 50
 buy_at     = 199999
-sell_at    = 800902020
+sell_at    = 1
 
 #change this to the tesseract.exe Location
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
@@ -21,6 +21,7 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 ##########################################
 
 ahk = AHK()
+
 item_coordinates = { # Made for 1980 x 1080 Monitor
     "empty"            : {"x": 1000, "y": 40},
 
@@ -44,6 +45,8 @@ item_coordinates = { # Made for 1980 x 1080 Monitor
     "box3_sell_amount" : {"x": 1250, "y": 595},
     "box3_sell"        : {"x": 1250, "y": 620},     
 }
+
+portfolio = []
 
 def print_logo():
     print('')
@@ -106,12 +109,19 @@ def capture_prices():
         mss.tools.to_png(sct_img.rgb, sct_img.size, output=output)
 
 def get_stock_data(vol,price,ticker):
-    price_data = [1,1,ticker]
+    price_data = [0,0,ticker]
     vol_data = translate(vol)
     raw_price = translate(price)[1:]
-    price_data[0]=int(vol_data)
-    price_data[1]=int(raw_price)
-    return (price_data)
+    try:
+        price_data[0]=int(vol_data)
+        price_data[1]=int(raw_price)
+    except:
+        print('translation error')
+        remount()
+        enter_stocks_menu()
+        enter_market()
+        return (price_data)
+    return(price_data)
 
 def enter_stocks_menu():
     print("Entering Stocks Menu")
@@ -150,8 +160,15 @@ def startup():
     enter_stocks_menu()
     enter_market()
 
+def owned (stock):
+    for asset in portfolio:
+        if asset[2] == stock[2]:
+            return True
+        else:
+            return False
+
 def buy(stock,shares):
-    print ("Buying"+stock[2])
+    print ("Buying "+stock[2])
     
     if (stock[2] == 'meinc'):
         amt_x=item_coordinates["box1_buy_amount"]["x"]
@@ -162,9 +179,15 @@ def buy(stock,shares):
     elif (stock[2] == 'sesh'):
         amt_x=item_coordinates["box2_buy_amount"]["x"]
         amt_y=item_coordinates["box2_buy_amount"]["y"]
+
+        buy_x = item_coordinates["box2_buy"]["x"]
+        buy_y = item_coordinates["box2_buy"]["y"]
     elif (stock[2] == 'tsv'):
         amt_x=item_coordinates["box3_buy_amount"]["x"]
         amt_y=item_coordinates["box3_buy_amount"]["y"]
+
+        buy_x = item_coordinates["box3_buy"]["x"]
+        buy_y = item_coordinates["box3_buy"]["y"]
     
     ahk.mouse_move(amt_x,amt_y)
     sleep(0.1)
@@ -179,39 +202,53 @@ def buy(stock,shares):
     remount()
     enter_stocks_menu()
     enter_market()
-    return shares
+    
+    holding = [shares,stock[1],stock[2]]
+    portfolio.append(holding)
+    return stock[0]
 
 def sell(stock):
-    return
+    for asset in portfolio:
+        if asset[2] == stock[2]:
+            print ('selling ',stock[2])
+            buy_volume = asset[0]
+            portfolio.remove(asset)
+    return (buy_volume)
 
 startup()
 
 while (True):
     capture_prices()
-    try:
-            meinc_data = (get_stock_data('meinc_vol.png','meinc_price.png','meinc'))
-            sesh_data = (get_stock_data('sesh_vol.png','sesh_price.png','sesh'))
-            tsv_data = (get_stock_data('tsv_vol.png','tsv_price.png','tsv'))
+    print("shares now available ",max_shares)
+    print('current portfolio: ',portfolio)
+    
+    while(True):
+        meinc_data = (get_stock_data('meinc_vol.png','meinc_price.png','meinc'))
+        sesh_data = (get_stock_data('sesh_vol.png','sesh_price.png','sesh'))
+        tsv_data = (get_stock_data('tsv_vol.png','tsv_price.png','tsv'))
 
-            stock_data = [meinc_data,sesh_data,tsv_data]
-
-            print('')
-            print (stock_data)
-
-            for stock in stock_data:
-                if stock[1] < buy_at and stock[0] > 0 and max_shares > 0:
-                    if stock[0] > max_shares:
-                        shares = max_shares
-                    else:
-                        shares = stock[0]
-                    max_shares = max_shares - buy(stock,shares)
-                    print("shares now available ",max_shares)
-                    break
-            sleep(5)
-
+        stock_data = [meinc_data,sesh_data,tsv_data]
+        
+        print('')
+        print (stock_data)
+        for stock in stock_data:
+            if stock[1] < buy_at and stock[0] > 0 and max_shares > 0:
+                if stock[0] > max_shares:
+                    shares = max_shares
+                else:
+                    shares = stock[0]
+                max_shares = max_shares - buy(stock,shares)
+                break
+            elif(stock[1] > sell_at and owned(stock)):
+                max_shares = max_shares + sell(stock)
+                break
+        sleep(3)
+        break
+    '''
     except:
         print('image capture error')
         remount()
         enter_stocks_menu()
         enter_market()
         sleep(3)    
+    '''
