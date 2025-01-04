@@ -260,7 +260,7 @@ while (True):
         print('Cycles: ',cycles)
         print('=====================================================================')
         for stock in stock_data:
-            if stock[1] < buy_at and stock[0] > 0 and max_shares > 0 and not owned(stock):
+            if stock[1] < buy_at and stock[0] > 0 and max_shares > 0 and not owned(stock) and stock[1] > 100:
                 if stock[0] > max_shares:
                     shares = max_shares
                 else:
@@ -270,7 +270,7 @@ while (True):
                 enter_stocks_menu()
                 enter_market()
                 break
-            elif(stock[1] > sell_at and owned(stock)):
+            elif(stock[1] > sell_at and owned(stock) and stock[1]<1000):
                 max_shares = max_shares + sell(stock)
                 remount()
                 enter_stocks_menu()
