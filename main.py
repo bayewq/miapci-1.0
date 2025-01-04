@@ -11,8 +11,8 @@ import requests
 #               EDIT THESE               #
 
 max_shares = 50
-buy_at     = 199999
-sell_at    = 1
+buy_at     = 300
+sell_at    = 700
 
 #change this to the tesseract.exe Location
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
@@ -47,6 +47,8 @@ item_coordinates = { # Made for 1980 x 1080 Monitor
 }
 
 portfolio = []
+
+cycles = 0
 
 def print_logo():
     print('')
@@ -126,17 +128,17 @@ def get_stock_data(vol,price,ticker):
 def enter_stocks_menu():
     print("Entering Stocks Menu")
     ahk.mouse_move(item_coordinates["enter"]["x"], item_coordinates["enter"]["y"])
-    sleep(3)
+    sleep(1)
     ahk.click()
-    sleep(3)
+    sleep(1)
     return 0
 
 def enter_market():
     print("Entering Stock Market")
     ahk.mouse_move(item_coordinates["buy_menu"]["x"], item_coordinates["buy_menu"]["y"])
-    sleep(3)
+    sleep(1)
     ahk.click()
-    sleep(3)
+    sleep(1)
     ahk.mouse_move(item_coordinates["empty"]["x"], item_coordinates["empty"]["y"])
     sleep(1)
     return 0
@@ -155,8 +157,7 @@ def startup():
     input('Press Enter To Continue...')
     print('TAB BACK INTO ROBLOX')
     sleep(3)
-    
-    remount()
+
     enter_stocks_menu()
     enter_market()
 
@@ -190,27 +191,53 @@ def buy(stock,shares):
         buy_y = item_coordinates["box3_buy"]["y"]
     
     ahk.mouse_move(amt_x,amt_y)
-    sleep(0.1)
+    sleep(0.5)
     ahk.click()
-    sleep(0.1)
+    sleep(0.5)
     ahk.type(f"{shares}")
-    sleep(0.1)
+    sleep(0.5)
     ahk.mouse_move(buy_x,buy_y)
-    sleep(0.1)
+    sleep(0.5)
     ahk.click()
-    sleep(1)
-    remount()
-    enter_stocks_menu()
-    enter_market()
-    
+    sleep(0.5)    
     holding = [shares,stock[1],stock[2]]
     portfolio.append(holding)
-    return stock[0]
+    return shares
 
 def sell(stock):
+    print ("Selling "+stock[2])
     for asset in portfolio:
         if asset[2] == stock[2]:
-            print ('selling ',stock[2])
+            
+            if (stock[2] == 'meinc'):
+                amt_x=item_coordinates["box1_sell_amount"]["x"]
+                amt_y=item_coordinates["box1_sell_amount"]["y"]
+
+                buy_x = item_coordinates["box1_sell"]["x"]
+                buy_y = item_coordinates["box1_sell"]["y"]
+            elif (stock[2] == 'sesh'):
+                amt_x=item_coordinates["box2_sell_amount"]["x"]
+                amt_y=item_coordinates["box2_sell_amount"]["y"]
+
+                buy_x = item_coordinates["box2_sell"]["x"]
+                buy_y = item_coordinates["box2_sell"]["y"]
+            elif (stock[2] == 'tsv'):
+                amt_x=item_coordinates["box3_sell_amount"]["x"]
+                amt_y=item_coordinates["box3_sell_amount"]["y"]
+
+                buy_x = item_coordinates["box3_sell"]["x"]
+                buy_y = item_coordinates["box3_sell"]["y"]    
+
+            ahk.mouse_move(amt_x,amt_y)
+            sleep(0.5)
+            ahk.click()
+            sleep(0.5)
+            ahk.type(f"{asset[0]}")
+            sleep(0.5)
+            ahk.mouse_move(buy_x,buy_y)
+            sleep(0.5)
+            ahk.click()
+            sleep(0.5)
             buy_volume = asset[0]
             portfolio.remove(asset)
     return (buy_volume)
@@ -218,37 +245,41 @@ def sell(stock):
 startup()
 
 while (True):
-    capture_prices()
-    print("shares now available ",max_shares)
-    print('current portfolio: ',portfolio)
-    
-    while(True):
+    try:
+        capture_prices()
         meinc_data = (get_stock_data('meinc_vol.png','meinc_price.png','meinc'))
         sesh_data = (get_stock_data('sesh_vol.png','sesh_price.png','sesh'))
         tsv_data = (get_stock_data('tsv_vol.png','tsv_price.png','tsv'))
 
         stock_data = [meinc_data,sesh_data,tsv_data]
-        
+        print('=====================================================================')
+        print("shares now available ",max_shares)
+        print('current portfolio: ',portfolio)
+        print ('live data: ',stock_data)
         print('')
-        print (stock_data)
+        print('Cycles: ',cycles)
+        print('=====================================================================')
         for stock in stock_data:
-            if stock[1] < buy_at and stock[0] > 0 and max_shares > 0:
+            if stock[1] < buy_at and stock[0] > 0 and max_shares > 0 and not owned(stock):
                 if stock[0] > max_shares:
                     shares = max_shares
                 else:
                     shares = stock[0]
                 max_shares = max_shares - buy(stock,shares)
+                remount()
+                enter_stocks_menu()
+                enter_market()
                 break
             elif(stock[1] > sell_at and owned(stock)):
                 max_shares = max_shares + sell(stock)
+                remount()
+                enter_stocks_menu()
+                enter_market()
                 break
+        cycles += 1
         sleep(3)
-        break
-    '''
     except:
-        print('image capture error')
+        print('error')
         remount()
         enter_stocks_menu()
         enter_market()
-        sleep(3)    
-    '''
