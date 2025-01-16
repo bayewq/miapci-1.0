@@ -48,6 +48,8 @@ item_coordinates = { # Made for 1980 x 1080 Monitor
 
 portfolio = []
 
+profit = 0 
+
 cycles = 0
 
 def print_logo():
@@ -244,6 +246,8 @@ def sell(stock):
 
 startup()
 
+# main
+
 while (True):
     try:
         capture_prices()
@@ -277,6 +281,10 @@ while (True):
                 enter_market()
                 break
         cycles += 1
+        if cycles > 20:
+            #anti afk
+            remount()
+            cycles = 0 
         sleep(3)
     except:
         print('error')
