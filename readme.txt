@@ -1,10 +1,10 @@
 [Name]
-Miami Investment Association's Project Creek Island 
+MIA Project Creek Island 
 1.0 Prerelease
 
 [Author]
 
-Built by bayewq on original version by LocalKebabShackOwner
+Built by bayewq on original version by anon contributors
 
 
 [Installation]
